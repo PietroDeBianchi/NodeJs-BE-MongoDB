@@ -1,4 +1,4 @@
-# 🚀 NodeJs-BE w MongoDB
+# 💻 NodeJs-BE w MongoDB 🐘
 
 A Backend API for user authentication and management built with Node.js and MongoDB.
 The project includes user registration, login, and route protection using JWT authentication.
