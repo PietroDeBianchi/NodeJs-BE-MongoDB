@@ -43,53 +43,10 @@ Check .env.example – only `MONGO_URI` is required to start the application.
 
 ---
 
-## 📂 Project structure `yarn scaffold`
+## 🦾 Utils
 
-|||Project in: NodeJs-BE-MongoDB
-├── .env
-├── .gitignore
-├── .prettierrc
-├── .vscode/
-│ └── launch.json
-├── package.json
-├── src/
-│ ├── app.js
-│ ├── config/
-│ │ ├── database.js
-│ │ └── express.js
-│ ├── controllers/
-│ │ └── authController.js
-│ ├── helpers/
-│ │ └── authHelper.js
-│ ├── middleware/
-│ │ └── authMiddleware.js
-│ ├── models/
-│ │ └── User.js
-│ ├── routes/
-│ │ ├── auth.routes.js
-│ │ └── index.js
-│ └── utils/
-│ └── terminal/
-│ ├── list-endpoints.js
-│ └── scaffold-viewer.js
-└── yarn.lock
+### 📂 Project structure
+Run `yarn scaffold`
 
-## 🔥 API Endpoints `yarn api-list`
-
-[
-  {
-    path: '/api/v1/auth/login',
-    methods: [ 'POST' ],
-    middlewares: [ 'login' ]
-  },
-  {
-    path: '/api/v1/auth/register',
-    methods: [ 'POST' ],
-    middlewares: [ 'register' ]
-  },
-  {
-    path: '/api/v1/auth/me',
-    methods: [ 'GET' ],
-    middlewares: [ 'authMiddleware', 'me' ]
-  }
-]
+### 🔥 API Endpoints 
+Run `yarn api-list`
