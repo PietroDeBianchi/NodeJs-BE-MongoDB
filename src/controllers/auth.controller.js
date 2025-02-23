@@ -1,4 +1,4 @@
-const authHelper = require("../helpers/authHelper");
+const { registerUser, loginUser, getUserById } = require("../helpers/auth.helper");
 
 /**
  * Controller for user registration.
@@ -9,10 +9,10 @@ const authHelper = require("../helpers/authHelper");
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-exports.register = async (req, res, next) => {
+const register = async (req, res, next) => {
     try {
         // Call helper function to register a new user
-        const userResponse = await authHelper.registerUser(req.body);
+        const userResponse = await registerUser(req.body);
 
         // Send success response with user details
         res.status(201).json({
@@ -37,12 +37,12 @@ exports.register = async (req, res, next) => {
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-exports.login = async (req, res, next) => {
+const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
         // Call helper function to authenticate user and get JWT token
-        const { token, user } = await authHelper.loginUser(email, password);
+        const { token, user } = await loginUser(email, password);
 
         // Send success response with token and user details
         res.status(200).json({
@@ -66,11 +66,10 @@ exports.login = async (req, res, next) => {
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-exports.me = async (req, res, next) => {
+const me = async (req, res, next) => {
     try {
         // Fetch user details using the ID extracted from the authenticated request
-        const user = await authHelper.getUserById(req.user.id);
-
+        const user = await getUserById(req.user.id);
         // Send success response with user data
         res.status(200).json({
             success: true,
@@ -78,8 +77,9 @@ exports.me = async (req, res, next) => {
         });
     } catch (error) {
         console.error("Errore nel recupero dati utente:", error);
-
         // Return a 400 error if user is not found
         res.status(400).json({ success: false, message: error.message });
     }
 };
+
+module.exports = { register, login, me };

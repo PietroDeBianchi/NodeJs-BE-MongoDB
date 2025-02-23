@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User.js");
+const User = require("../models/User.model.js");
 
 // ENV Vars
 const JWT_SECRET = process.env.JWT_SECRET || "secret";
@@ -12,7 +12,7 @@ const JWT_EXPIRATION = process.env.JWT_EXPIRATION || "7d";
  * @returns {Object} - Returns the created user object without the password.
  * @throws {Error} - Throws error if registration fails.
  */
-exports.registerUser = async (userData) => {
+const registerUser = async (userData) => {
     const { email, password, firstName, lastName, roles, phone } = userData;
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -46,7 +46,7 @@ exports.registerUser = async (userData) => {
  * @returns {Object} - Returns a JWT token and user data without password.
  * @throws {Error} - Throws error if login fails.
  */
-exports.loginUser = async (email, password) => {
+const loginUser = async (email, password) => {
     // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
@@ -78,10 +78,12 @@ exports.loginUser = async (email, password) => {
  * @returns {Object} - Returns the user object without password.
  * @throws {Error} - Throws error if user is not found.
  */
-exports.getUserById = async (userId) => {
+const getUserById = async (userId) => {
     const user = await User.findById(userId).select("-password");
     if (!user) {
         throw new Error("Utente non trovato");
     }
     return user;
 };
+
+module.exports = { registerUser, loginUser, getUserById };
