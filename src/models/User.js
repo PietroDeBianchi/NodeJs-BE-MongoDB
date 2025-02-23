@@ -48,6 +48,7 @@ const userSchema = new Schema(
     }
 );
 
+// Use to autopopulate reference with entity ID
 userSchema.plugin(require('mongoose-autopopulate'));
 
 module.exports = mongoose.model('users', userSchema);

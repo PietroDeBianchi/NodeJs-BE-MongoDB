@@ -27,7 +27,7 @@ app.use(helmet());
 app.use(cors({ credentials: true, origin: true }));
 
 // mount api v1 routes
-app.use('/api/v1', routes);
+app.use('/api', routes);
 
 // Middleware to handle errors
 app.use((err, req, res, next) => {

@@ -1,38 +1,20 @@
-const User = require("../models/User.js");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const authHelper = require("../helpers/authHelper");
 
-// ENV Vars
-const JWT_SECRET = process.env.JWT_SECRET || "secret";
-const JWT_EXPIRATION = process.env.JWT_EXPIRATION || "7d";
-
+/**
+ * Controller for user registration.
+ * It validates input, calls the helper function to create a new user,
+ * and sends a response with user details (excluding the password).
+ *
+ * @param {Object} req - Express request object (contains user data in req.body).
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ */
 exports.register = async (req, res, next) => {
     try {
-        const { email, password, firstName, lastName, roles, phone } = req.body;
-        // Verify existing User by email
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({
-                success: false,
-                message: "Utente già esistente con questa email",
-            });
-        }
-        // Hashing password
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-        // Create new User
-        const newUser = new User({
-            email,
-            password: hashedPassword,
-            firstName,
-            lastName,
-            phone: phone || null,
-            roles: roles || "user",
-        });
-        const createdUser = await newUser.save();
-        // Remove password from response
-        const userResponse = createdUser.toObject();
-        delete userResponse.password;
+        // Call helper function to register a new user
+        const userResponse = await authHelper.registerUser(req.body);
+
+        // Send success response with user details
         res.status(201).json({
             success: true,
             message: "Utente creato correttamente",
@@ -41,70 +23,63 @@ exports.register = async (req, res, next) => {
         });
     } catch (error) {
         console.error("Errore registrazione:", error);
-        res.status(500).json({ success: false, message: error.message });
+        // Return a 400 error if user creation fails (e.g., email already in use)
+        res.status(400).json({ success: false, message: error.message });
     }
 };
+
+/**
+ * Controller for user login.
+ * It checks user credentials, generates a JWT token if valid,
+ * and sends the token along with user details.
+ *
+ * @param {Object} req - Express request object (contains email and password in req.body).
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ */
 exports.login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        // Check User
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: "Utente non trovato con questa email",
-            });
-        }
-        // Check Password
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(401).json({
-                success: false,
-                message: "Password errata",
-            });
-        }
-        // Create token JWT
-        const tokenPayload = {
-            id: user.id,
-            email: user.email,
-            roles: user.roles,
-        };
-        const token = jwt.sign(tokenPayload, JWT_SECRET, {
-            expiresIn: JWT_EXPIRATION,
-        });
-        const userResponse = user.toObject();
-        delete userResponse.password;
+
+        // Call helper function to authenticate user and get JWT token
+        const { token, user } = await authHelper.loginUser(email, password);
+
+        // Send success response with token and user details
         res.status(200).json({
             success: true,
             message: "Login effettuato con successo",
-            data: { token, user: userResponse },
+            data: { token, user },
         });
     } catch (error) {
         console.error("Errore login:", error);
-        res.status(500).json({ success: false, message: error.message });
+
+        // Return a 400 error if login fails (e.g., incorrect password or email not found)
+        res.status(400).json({ success: false, message: error.message });
     }
 };
 
+/**
+ * Controller to retrieve authenticated user details.
+ * It uses the user ID from the decoded JWT token to fetch user data.
+ *
+ * @param {Object} req - Express request object (contains user ID in req.user).
+ * @param {Object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ */
 exports.me = async (req, res, next) => {
     try {
-        const userId = req.user.id;
-        const user = await User.findById(userId).select("-password");
+        // Fetch user details using the ID extracted from the authenticated request
+        const user = await authHelper.getUserById(req.user.id);
 
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: "Utente non trovato",
-            });
-        }
-
+        // Send success response with user data
         res.status(200).json({
             success: true,
-            data: {
-                user,
-            },
+            data: { user },
         });
     } catch (error) {
         console.error("Errore nel recupero dati utente:", error);
-        res.status(500).json({ success: false, message: error.message });
+
+        // Return a 400 error if user is not found
+        res.status(400).json({ success: false, message: error.message });
     }
 };
