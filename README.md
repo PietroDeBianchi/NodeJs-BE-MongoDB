@@ -23,8 +23,6 @@ The project includes user registration, login, and route protection using JWT au
 - [dotenv](https://www.npmjs.com/package/dotenv)
 - [nodemon](https://www.npmjs.com/package/nodemon)
 
----
-
 ## 🔌 Install
 
 ### 1 Clone repository and Install dependecies:
@@ -40,8 +38,6 @@ Check .env.example – only `MONGO_URI` is required to start the application.
 ### 3 Run Server :
 
 `yarn dev` for Nodemon or `yarn start` for Node
-
----
 
 ## 🦾 Utils
 
