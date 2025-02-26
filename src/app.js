@@ -9,7 +9,7 @@ const connectDB = require("./config/database");
 const PORT = process.env.PORT || 3000;
 const PROJECT_NAME = process.env.PROJECT_NAME || 'TEST';
 
-// START
+// LOAD MESSAGE & FUNCTIONS
 const logStartupMessage = async () => {
     console.log("=".repeat(50).blue);
     console.log(`🚀 Project: ${PROJECT_NAME}`.green);
@@ -22,7 +22,7 @@ const logStartupMessage = async () => {
     console.log("=".repeat(50).blue);
 };
 
-// Start the server
+// START THE SERVER
 app.listen(PORT, () => {
     logStartupMessage();
 });
