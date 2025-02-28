@@ -1,8 +1,8 @@
 {
-  "name": "trezorly",
+  "name": "nodejs-mongodb-be",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "git@github.com:PietroDeBianchi/Trezorl-BE.git",
+  "repository": "git@github.com:PietroDeBianchi/NodeJs-BE-MongoDB.git",
   "author": "PietroDeBianchi <pietro.debianchi@shadapps.it>",
   "license": "MIT",
   "scripts": {
