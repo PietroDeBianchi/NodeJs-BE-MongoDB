@@ -41,19 +41,17 @@ const login = async (req, res, next) => {
         const { email, password } = req.body;
 
         // Call helper function to authenticate user and get JWT token
-        const { token, user } = await loginUser(email, password);
+        const token = await loginUser(email, password);
         // Set the token in a secure HTTP-only cookie
         res.cookie("token", token, {
             httpOnly: true, // Prevents client-side JavaScript
             sameSite: "Strict", // Prevents CSRF attacks
             maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day expiration -> check JWT_EXPIRATION
         });
-
         // Send success response without exposing the token
         res.status(200).json({
             success: true,
             message: "Login effettuato con successo",
-            user, // Send user details but no token
         });
     } catch (error) {
         console.error("Errore login:", error);

@@ -14,14 +14,12 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret";
 const authMiddleware = (req, res, next) => {
     // Retrieve the token from the cookies
     const token = req.cookies?.token;
-    
     // If no token is provided, deny access
     if (!token) {
         return res.status(401).json({
             message: "Accesso negato. Nessun token fornito.",
         });
     }
-
     try {
         // Verify the token and decode the user data
         const decoded = jwt.verify(token, JWT_SECRET);

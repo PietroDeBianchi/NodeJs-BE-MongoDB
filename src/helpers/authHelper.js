@@ -62,18 +62,12 @@ const loginUser = async (email, password) => {
     // Generate JWT token
     const tokenPayload = {
         id: user.id,
-        email: user.email,
         roles: user.roles,
     };
     const token = jwt.sign(tokenPayload, JWT_SECRET, {
         expiresIn: JWT_EXPIRATION,
     });
-
-    // Convert to object and remove password field
-    const userResponse = user.toObject();
-    delete userResponse.password;
-
-    return { token, user: userResponse };
+    return token;
 };
 
 
