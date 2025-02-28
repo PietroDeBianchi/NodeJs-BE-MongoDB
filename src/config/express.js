@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 const routes = require('../routes/index.js')
 
@@ -26,7 +27,10 @@ app.use(helmet());
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors({ credentials: true, origin: true }));
 
-// mount api v1 routes
+// enable Cookies Parser
+app.use(cookieParser())
+
+// mount api routes
 app.use('/api', routes);
 
 // Middleware to handle errors

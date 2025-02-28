@@ -1,4 +1,4 @@
-const { registerUser, loginUser, getUserById } = require("../helpers/auth.helper");
+const { registerUser, loginUser, getUserById } = require("../helpers/authHelper");
 
 /**
  * Controller for user registration.
@@ -44,20 +44,25 @@ const login = async (req, res, next) => {
         // Call helper function to authenticate user and get JWT token
         const { token, user } = await loginUser(email, password);
 
-        // Send success response with token and user details
+        // Set the token in a secure HTTP-only cookie
+        res.cookie("token", token, {
+            httpOnly: true, // Prevents client-side JavaScript
+            // secure: process.env.NODE_ENV === "production", // Use HTTPS in production
+            sameSite: "Strict", // Prevents CSRF attacks
+            maxAge: 3600000, // 1 hour expiration
+        });
+
+        // Send success response without exposing the token
         res.status(200).json({
             success: true,
             message: "Login effettuato con successo",
-            data: { token, user },
+            user, // Send user details but no token
         });
     } catch (error) {
         console.error("Errore login:", error);
-
-        // Return a 400 error if login fails (e.g., incorrect password or email not found)
         res.status(400).json({ success: false, message: error.message });
     }
 };
-
 /**
  * Controller to retrieve authenticated user details.
  * It uses the user ID from the decoded JWT token to fetch user data.
@@ -73,7 +78,7 @@ const me = async (req, res, next) => {
         // Send success response with user data
         res.status(200).json({
             success: true,
-            data: { user },
+            user,
         });
     } catch (error) {
         console.error("Errore nel recupero dati utente:", error);

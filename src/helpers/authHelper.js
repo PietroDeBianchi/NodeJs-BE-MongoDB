@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User.model.js");
+const User = require("../models/User.js");
 
 // ENV Vars
 const JWT_SECRET = process.env.JWT_SECRET || "secret";
@@ -52,11 +52,13 @@ const loginUser = async (email, password) => {
     if (!user) {
         throw new Error("Utente non trovato con questa email");
     }
+
     // Validate password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
         throw new Error("Password errata");
     }
+
     // Generate JWT token
     const tokenPayload = {
         id: user.id,
@@ -66,11 +68,14 @@ const loginUser = async (email, password) => {
     const token = jwt.sign(tokenPayload, JWT_SECRET, {
         expiresIn: JWT_EXPIRATION,
     });
+
     // Convert to object and remove password field
     const userResponse = user.toObject();
     delete userResponse.password;
+
     return { token, user: userResponse };
 };
+
 
 /**
  * Retrieves user data based on the provided user ID.

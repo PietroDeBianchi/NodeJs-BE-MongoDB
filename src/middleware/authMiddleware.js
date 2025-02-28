@@ -3,8 +3,8 @@ const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET || "secret";
 
 /**
- * Middleware to authenticate requests using JWT.
- * It verifies the token from the Authorization header and extracts user data.
+ * Middleware to authenticate requests using JWT stored in cookies.
+ * It verifies the token from the request cookies and extracts user data.
  *
  * @param {Object} req - Express request object.
  * @param {Object} res - Express response object.
@@ -12,19 +12,23 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret";
  */
 
 const authMiddleware = (req, res, next) => {
-    // Retrieve the token from the Authorization header
-    const token = req.header("Authorization");
+    // Retrieve the token from the cookies
+    const token = req.cookies?.token;
+    
     // If no token is provided, deny access
     if (!token) {
         return res.status(401).json({
             message: "Accesso negato. Nessun token fornito.",
         });
     }
+
     try {
-        // Remove 'Bearer ' prefix (if present) and verify the token
-        const decoded = jwt.verify(token.replace("Bearer ", ""), JWT_SECRET);
+        // Verify the token and decode the user data
+        const decoded = jwt.verify(token, JWT_SECRET);
+        
         // Attach the decoded user data to the request object
         req.user = decoded;
+        
         // Proceed to the next middleware/controller
         next();
     } catch (err) {
