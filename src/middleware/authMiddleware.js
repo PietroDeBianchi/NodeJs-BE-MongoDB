@@ -25,10 +25,8 @@ const authMiddleware = (req, res, next) => {
     try {
         // Verify the token and decode the user data
         const decoded = jwt.verify(token, JWT_SECRET);
-        
         // Attach the decoded user data to the request object
         req.user = decoded;
-        
         // Proceed to the next middleware/controller
         next();
     } catch (err) {

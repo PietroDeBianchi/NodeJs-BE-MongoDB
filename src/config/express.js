@@ -1,12 +1,11 @@
+const express = require("express");
 
-const express = require('express');
+const cors = require("cors");
+const helmet = require("helmet");
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 
-const cors = require('cors');
-const helmet = require('helmet');
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-
-const routes = require('../routes/index.js')
+const routes = require("../routes/index.js");
 
 /**
  * Express instance
@@ -15,7 +14,7 @@ const routes = require('../routes/index.js')
 const app = express();
 
 // request logging. dev: console | production: file
-app.enable('trust proxy');
+app.enable("trust proxy");
 
 // parse body params and attache them to req.body
 app.use(bodyParser.json());
@@ -28,18 +27,22 @@ app.use(helmet());
 app.use(cors({ credentials: true, origin: true }));
 
 // enable Cookies Parser
-app.use(cookieParser())
+app.use(cookieParser());
 
 // mount api routes
-app.use('/api', routes);
+app.use("/api", routes);
 
 // Middleware to handle errors
 app.use((err, req, res, next) => {
-    console.error(err.stack); // Log
-    res.status(err.status || 500).json({
-        message: err.message || 'Errore interno del server',
-        status: err.status || 500
+    const statusCode = err.status || 500;
+    const errorMessage =
+        statusCode === 500 && process.env.NODE_ENV === "production"
+            ? "Errore interno del server"
+            : err.message;
+    res.status(statusCode).json({
+        status: statusCode,
+        message: errorMessage,
     });
-})
+});
 
 module.exports = app;

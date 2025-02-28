@@ -4,7 +4,7 @@ const User = require("../models/User.js");
 
 // ENV Vars
 const JWT_SECRET = process.env.JWT_SECRET || "secret";
-const JWT_EXPIRATION = process.env.JWT_EXPIRATION || "7d";
+const JWT_EXPIRATION = process.env.JWT_EXPIRATION || "1d";
 
 /**
  * Registers a new user in the database.

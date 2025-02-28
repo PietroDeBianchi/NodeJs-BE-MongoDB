@@ -19,7 +19,6 @@ const register = async (req, res, next) => {
             success: true,
             message: "Utente creato correttamente",
             data: userResponse,
-            count: 1,
         });
     } catch (error) {
         console.error("Errore registrazione:", error);
@@ -43,13 +42,11 @@ const login = async (req, res, next) => {
 
         // Call helper function to authenticate user and get JWT token
         const { token, user } = await loginUser(email, password);
-
         // Set the token in a secure HTTP-only cookie
         res.cookie("token", token, {
             httpOnly: true, // Prevents client-side JavaScript
-            // secure: process.env.NODE_ENV === "production", // Use HTTPS in production
             sameSite: "Strict", // Prevents CSRF attacks
-            maxAge: 3600000, // 1 hour expiration
+            maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day expiration -> check JWT_EXPIRATION
         });
 
         // Send success response without exposing the token
