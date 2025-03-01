@@ -11,20 +11,24 @@ const { registerUser, loginUser, getUserById } = require("../helpers/authHelper"
  */
 const register = async (req, res, next) => {
     try {
-        // Call helper function to register a new user
-        await registerUser(req.body);
-        // Send success response with user details
+        const result = await registerUser(req.body);
+        
+        if (!result.success) {
+            return res.status(400).json(result);
+        }
+
         res.status(201).json({
             success: true,
             message: "Utente creato correttamente",
         });
     } catch (error) {
         console.error("Errore registrazione:", error);
-        // Return a 400 error if user creation fails (e.g., email already in use)
-        res.status(400).json({ success: false, message: error.message });
+        res.status(500).json({
+            success: false,
+            message: "Errore interno del server",
+        });
     }
 };
-
 /**
  * Controller for user login.
  * It checks user credentials, generates a JWT token if valid,
@@ -37,21 +41,25 @@ const register = async (req, res, next) => {
 const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        // Call helper function to authenticate user and get JWT token
-        const token = await loginUser(email, password);
-        // Set the token in a secure HTTP-only cookie
-        res.cookie("token", token, {
-            sameSite: "Strict", // Prevents CSRF attacks
-            maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day expiration -> check JWT_EXPIRATION
+        const result = await loginUser(email, password);
+        if (!result.success) {
+            return res.status(400).json(result);
+        }
+        res.cookie("token", result.token, {
+            sameSite: "Strict",
+            maxAge: 24 * 60 * 60 * 1000, // 1d
+            // secure: process.env.NODE_ENV === "production", // Only HTTPS  in production
         });
-        // Send success response without exposing the token
         res.status(200).json({
             success: true,
             message: "Login effettuato con successo",
         });
     } catch (error) {
         console.error("Errore login:", error);
-        res.status(400).json({ success: false, message: error.message });
+        res.status(500).json({
+            success: false,
+            message: "Errore interno del server",
+        });
     }
 };
 /**
@@ -64,17 +72,22 @@ const login = async (req, res, next) => {
  */
 const me = async (req, res, next) => {
     try {
-        // Fetch user details using the ID extracted from the authenticated request
-        const user = await getUserById(req.user.id);
-        // Send success response with user data
+        const result = await getUserById(req.user.id);
+
+        if (!result.success) {
+            return res.status(400).json(result);
+        }
+
         res.status(200).json({
             success: true,
-            user,
+            user: result.user,
         });
     } catch (error) {
         console.error("Errore nel recupero dati utente:", error);
-        // Return a 400 error if user is not found
-        res.status(400).json({ success: false, message: error.message });
+        res.status(500).json({
+            success: false,
+            message: "Errore interno del server",
+        });
     }
 };
 
