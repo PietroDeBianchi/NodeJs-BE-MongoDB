@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User.js");
-const ApiResponse = require("../utils/api/apiReponse.js");
+const ApiResponse = require("../utils/formats/apiReponse.js");
 
 // ENV Vars
 const JWT_SECRET = process.env.JWT_SECRET || "secret";

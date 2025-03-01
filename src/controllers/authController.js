@@ -1,5 +1,5 @@
 const { registerUser, loginUser, getUserById } = require("../helpers/authHelper");
-const ApiResponse = require("../utils/api/apiReponse.js");
+const ApiResponse = require("../utils/formats/apiReponse.js");
 
 /**
  * Controller for user registration.
