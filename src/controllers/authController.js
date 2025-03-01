@@ -1,4 +1,5 @@
 const { registerUser, loginUser, getUserById } = require("../helpers/authHelper");
+const ApiResponse = require("../utils/api/apiReponse.js");
 
 /**
  * Controller for user registration.
@@ -12,21 +13,13 @@ const { registerUser, loginUser, getUserById } = require("../helpers/authHelper"
 const register = async (req, res, next) => {
     try {
         const result = await registerUser(req.body);
-        
         if (!result.success) {
             return res.status(400).json(result);
         }
-
-        res.status(201).json({
-            success: true,
-            message: "Utente creato correttamente",
-        });
+        res.status(201).json(result);
     } catch (error) {
         console.error("Errore registrazione:", error);
-        res.status(500).json({
-            success: false,
-            message: "Errore interno del server",
-        });
+        res.status(500).json(ApiResponse(false, null, "Errore interno del server"));
     }
 };
 /**
@@ -45,21 +38,15 @@ const login = async (req, res, next) => {
         if (!result.success) {
             return res.status(400).json(result);
         }
-        res.cookie("token", result.token, {
+        res.cookie("token", result.data, {
             sameSite: "Strict",
             maxAge: 24 * 60 * 60 * 1000, // 1d
             // secure: process.env.NODE_ENV === "production", // Only HTTPS  in production
         });
-        res.status(200).json({
-            success: true,
-            message: "Login effettuato con successo",
-        });
+        res.status(200).json(ApiResponse(result.success, null, result.message));
     } catch (error) {
         console.error("Errore login:", error);
-        res.status(500).json({
-            success: false,
-            message: "Errore interno del server",
-        });
+        res.status(500).json(ApiResponse(false, null, "Errore interno del server"));
     }
 };
 /**
@@ -73,21 +60,13 @@ const login = async (req, res, next) => {
 const me = async (req, res, next) => {
     try {
         const result = await getUserById(req.user.id);
-
         if (!result.success) {
             return res.status(400).json(result);
         }
-
-        res.status(200).json({
-            success: true,
-            user: result.user,
-        });
+        res.status(200).json(ApiResponse(result));
     } catch (error) {
         console.error("Errore nel recupero dati utente:", error);
-        res.status(500).json({
-            success: false,
-            message: "Errore interno del server",
-        });
+        res.status(500).json(ApiResponse(false, null, "Errore interno del server"));
     }
 };
 

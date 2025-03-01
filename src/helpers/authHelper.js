@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User.js");
+const ApiResponse = require("../utils/api/apiReponse.js");
 
 // ENV Vars
 const JWT_SECRET = process.env.JWT_SECRET || "secret";
@@ -23,7 +24,7 @@ const registerUser = async (userData) => {
 
         const existingUser = await User.findOne({ email: cleanEmail });
         if (existingUser) {
-            return { success: false, message: "Email già in uso" };
+            return ApiResponse(false, null, "Email già in uso");
         }
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
@@ -36,10 +37,10 @@ const registerUser = async (userData) => {
             roles: roles || "user",
         });
         await newUser.save();
-        return { success: true };
+        return ApiResponse(true, null, "Utente registrato con successo");
     } catch (error) {
         console.error("Errore durante la registrazione:", error);
-        return { success: false, message: "Errore nella creazione dell'utente" };
+        return ApiResponse(false, null, "Errore nella creazione dell'utente");
     }
 };
 /**
@@ -53,21 +54,21 @@ const loginUser = async (email, password) => {
     try {
         const user = await User.findOne({ email });
         if (!user) {
-            return { success: false, message: "Utente non valido" };
+            return ApiResponse(false, null, "Utente non valido");
         }
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return { success: false, message: "Password non valida" };
+            return ApiResponse(false, null, "Password non valida");
         }
         const tokenPayload = {
             id: user.id,
             roles: user.roles,
         };
         const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: JWT_EXPIRATION });
-        return { success: true, token };
+        return ApiResponse(true, token, "Login effettuata con successo");
     } catch (error) {
         console.error("Errore durante Login:", error);
-        return { success: false, message: "Errore durante il recupero dell'Utente" };
+        return ApiResponse(false, null, "Errore durante il recupero dell'Utente");
     }
 };
 
@@ -81,12 +82,12 @@ const getUserById = async (userId) => {
     try {
         const user = await User.findById(userId).select("-password");
         if (!user) {
-            return { success: false, message: "Utente non valido" };
+            return ApiResponse(false, null, "Utente non valido");
         }
-        return { success: true, user };
+        return ApiResponse(true, user, "Utente valido");
     } catch (error) {
         console.error("Errore durante il recupero dell'utente:", error);
-        return { success: false, message: "Errore nel recupero dell'utente" };
+        return ApiResponse(false, null, "Errore nel recupero dell'utente");
     }
 };
 
