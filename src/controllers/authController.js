@@ -12,13 +12,11 @@ const { registerUser, loginUser, getUserById } = require("../helpers/authHelper"
 const register = async (req, res, next) => {
     try {
         // Call helper function to register a new user
-        const userResponse = await registerUser(req.body);
-
+        await registerUser(req.body);
         // Send success response with user details
         res.status(201).json({
             success: true,
             message: "Utente creato correttamente",
-            data: userResponse,
         });
     } catch (error) {
         console.error("Errore registrazione:", error);
@@ -39,7 +37,6 @@ const register = async (req, res, next) => {
 const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-
         // Call helper function to authenticate user and get JWT token
         const token = await loginUser(email, password);
         // Set the token in a secure HTTP-only cookie

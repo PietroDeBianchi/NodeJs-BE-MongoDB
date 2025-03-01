@@ -32,11 +32,8 @@ const registerUser = async (userData) => {
         roles: roles || "user",
     });
     // Save user to database
-    const createdUser = await newUser.save();
-    // Convert to object and remove password field
-    const userResponse = createdUser.toObject();
-    delete userResponse.password;
-    return userResponse;
+    await newUser.save();
+    return;
 };
 
 /**
