@@ -63,7 +63,7 @@ const me = async (req, res, next) => {
         if (!result.success) {
             return res.status(400).json(result);
         }
-        res.status(200).json(ApiResponse(result));
+        res.status(200).json(result);
     } catch (error) {
         console.error("Errore nel recupero dati utente:", error);
         res.status(500).json(ApiResponse(false, null, "Errore interno del server"));

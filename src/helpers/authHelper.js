@@ -82,7 +82,7 @@ const getUserById = async (userId) => {
     try {
         const user = await User.findById(userId).select("-password");
         if (!user) {
-            return ApiResponse(false, null, "Utente non valido");
+            return ApiResponse(false, null, "Utente non Registrato");
         }
         return ApiResponse(true, user, "Utente valido");
     } catch (error) {
