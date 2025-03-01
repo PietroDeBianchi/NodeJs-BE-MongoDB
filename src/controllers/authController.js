@@ -41,7 +41,6 @@ const login = async (req, res, next) => {
         const token = await loginUser(email, password);
         // Set the token in a secure HTTP-only cookie
         res.cookie("token", token, {
-            httpOnly: true, // Prevents client-side JavaScript
             sameSite: "Strict", // Prevents CSRF attacks
             maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day expiration -> check JWT_EXPIRATION
         });

@@ -17,7 +17,7 @@ const registerUser = async (userData) => {
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-        throw new Error("Utente già esistente con questa email");
+        console.error("Utente già esistente con questa email");
     }
     // Hash password
     const salt = await bcrypt.genSalt(10);
@@ -47,13 +47,13 @@ const loginUser = async (email, password) => {
     // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
-        throw new Error("Utente non trovato con questa email");
+        console.error("Utente non trovato con questa email");
     }
 
     // Validate password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-        throw new Error("Password errata");
+        console.error("Password errata");
     }
 
     // Generate JWT token
@@ -77,7 +77,7 @@ const loginUser = async (email, password) => {
 const getUserById = async (userId) => {
     const user = await User.findById(userId).select("-password");
     if (!user) {
-        throw new Error("Utente non trovato");
+        console.error("Utente non trovato");
     }
     return user;
 };
