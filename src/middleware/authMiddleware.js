@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const ApiResponse = require("../utils/formats/apiReponse.js");
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret";
 
@@ -15,20 +16,16 @@ const authMiddleware = (req, res, next) => {
     try {
         const token = req.cookies?.token;
         if (!token) {
-            return res.status(401).json({
-                success: false,
-                message: "Accesso negato. Nessun token fornito.",
-            });
+            return res
+                .status(401)
+                .json(ApiResponse(false, null, "Accesso negato. Nessun token fornito."));
         }
         const decoded = jwt.verify(token, JWT_SECRET);
         req.user = decoded;
         next();
     } catch (err) {
         console.error("Errore autenticazione:", err.message);
-        return res.status(403).json({
-            success: false,
-            message: "Errore nell'autenticazione.",
-        });
+        return res.status(403).json(ApiResponse(false, null, "Errore nell'autenticazione."));
     }
 };
 
