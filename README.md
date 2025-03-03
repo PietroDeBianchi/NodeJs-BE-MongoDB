@@ -27,7 +27,7 @@ The project includes user registration, login, and route protection using JWT au
 
 ### 1 Clone repository and Install dependecies:
 
-`git clone git@github.com:PietroDeBianchi/NodeJs-BE-MongoDB.git`
+`git clone https://github.com/PietroDeBianchi/NodeJs-BE-MongoDB.git`
 `cd NodeJs-BE-MongoDB`
 `yarn install`
 
