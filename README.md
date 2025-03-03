@@ -44,5 +44,12 @@ Check .env.example – only `MONGO_URI` is required to start the application.
 ### 📂 Project structure
 Run `yarn scaffold`
 
-### 🔥 API Endpoints 
-Run `yarn api-list`
+### 🔥 API Response Structure 
+
+All API responses follow this structure:
+
+const ApiResponse = (success, data = null, message = "") => {
+    return { success, data, message };
+};
+
+Run `yarn api-list` to check all API
