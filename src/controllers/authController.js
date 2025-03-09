@@ -12,14 +12,18 @@ const ApiResponse = require("../utils/formats/apiReponse.js");
  */
 const register = async (req, res, next) => {
     try {
-        const result = await registerUser(req.body);
+        const { email, password, firstName, lastName, roles, phone } = req.body;
+        if (!email || !password || !firstName || !lastName) {
+            return res.status(400).json(ApiResponse(false, null, "Tutti i campi obbligatori devono essere forniti"));
+        }
+        const result = await registerUser(email, password, firstName, lastName, roles, phone);
         if (!result.success) {
             return res.status(400).json(result);
         }
-        res.status(201).json(result);
+        return res.status(201).json(result);
     } catch (error) {
         console.error("Errore registrazione:", error);
-        res.status(500).json(ApiResponse(false, null, "Errore interno del server"));
+        return res.status(500).json(ApiResponse(false, null, "Errore interno del server"));
     }
 };
 /**
@@ -34,6 +38,9 @@ const register = async (req, res, next) => {
 const login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
+        if (!email && !password) {
+            return res.status(400).json(ApiResponse(false, null, "Tutti i campi obbligatori devono essere forniti"));
+        }
         const result = await loginUser(email, password);
         if (!result.success) {
             return res.status(400).json(result);

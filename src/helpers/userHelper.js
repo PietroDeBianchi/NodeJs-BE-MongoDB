@@ -14,31 +14,48 @@ const JWT_EXPIRATION = process.env.JWT_EXPIRATION || "1d";
 
 const retriveUsers = async (req, res) => {
     try {
+        const users = await User.find().select("-password");
+        if (users.length === 0) {
+            return ApiResponse(false, null, "Utenti non trovati o pari a 0");
+        }
+        return res.json(ApiResponse(true, users, "Lista utenti recuperata con successo"));
     } catch (error) {
-        console.error("Errore durante il recupero dell'utente:", error);
-        return ApiResponse(false, null, "Errore nel recupero dell'utente");
+        console.error("Errore durante il recupero degli utenti:", error);
+        return ApiResponse(false, null, "Errore nel recupero degli utenti");
     }
 };
-const createNewUser = async (userId) => {
+
+const updateNewUser = async (userId, updateFields) => {
     try {
+        if (Object.keys(updateFields).length === 0) {
+            return ApiResponse(false, null, "Nessun dato fornito per l'aggiornamento");
+        }
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $set: updateFields },
+            { new: true, runValidators: true }
+        );
+        if (!updatedUser) {
+            return ApiResponse(false, null, "utent non trovato");
+        }
+        return ApiResponse(true, null, "Utente aggiornato con successo");
     } catch (error) {
-        console.error("Errore durante il recupero dell'utente:", error);
-        return ApiResponse(false, null, "Errore nel recupero dell'utente");
+        console.error("Errore durante l'aggiornamento dell'utente:", error);
+        return ApiResponse(false, null, "Errore durante l'aggiornamento dell'utente");
     }
 };
-const updateNewUser = async (userId) => {
-    try {
-    } catch (error) {
-        console.error("Errore durante il recupero dell'utente:", error);
-        return ApiResponse(false, null, "Errore nel recupero dell'utente");
-    }
-};
+
 const deleteExistingUser = async (userId) => {
     try {
+        const deletedUser = await User.findByIdAndDelete(userId);
+        if (!deletedUser) {
+            return ApiResponse(false, null, "utent non trovato");
+        }
+        return ApiResponse(true, null, "Utente eliminato con successo");
     } catch (error) {
         console.error("Errore durante il recupero dell'utente:", error);
         return ApiResponse(false, null, "Errore nel recupero dell'utente");
     }
 };
 
-module.exports = { retriveUsers, createNewUser, updateNewUser, deleteExistingUser };
+module.exports = { retriveUsers, updateNewUser, deleteExistingUser };

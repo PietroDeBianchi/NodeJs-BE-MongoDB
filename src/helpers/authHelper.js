@@ -14,20 +14,21 @@ const JWT_EXPIRATION = process.env.JWT_EXPIRATION || "1d";
  * @throws {Error} - Throws error if registration fails.
  */
 
-const registerUser = async (userData) => {
+const registerUser = async (email, password, firstName, lastName, roles, phone) => {
     try {
-        const { email, password, firstName, lastName, roles, phone } = userData;
-
+        // clean data
         const cleanEmail = email.trim().toLowerCase();
         const cleanFirstName = firstName.trim();
         const cleanLastName = lastName.trim();
-
+        // verify existingUser
         const existingUser = await User.findOne({ email: cleanEmail });
         if (existingUser) {
             return ApiResponse(false, null, "Email già in uso");
         }
+        // hash password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
+        // create new user
         const newUser = new User({
             email: cleanEmail,
             password: hashedPassword,
@@ -36,6 +37,7 @@ const registerUser = async (userData) => {
             phone: phone || null,
             roles: roles || "user",
         });
+        // save and responde
         await newUser.save();
         return ApiResponse(true, null, "Utente registrato con successo");
     } catch (error) {
@@ -52,19 +54,23 @@ const registerUser = async (userData) => {
  */
 const loginUser = async (email, password) => {
     try {
+        // find user
         const user = await User.findOne({ email });
         if (!user) {
             return ApiResponse(false, null, "Utente non valido");
         }
+        // check password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return ApiResponse(false, null, "Password non valida");
         }
+        // create token
         const tokenPayload = {
             id: user.id,
             roles: user.roles,
         };
         const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: JWT_EXPIRATION });
+        // save and responde
         return ApiResponse(true, token, "Login effettuata con successo");
     } catch (error) {
         console.error("Errore durante Login:", error);

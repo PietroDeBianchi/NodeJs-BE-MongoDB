@@ -22,6 +22,11 @@ const authMiddleware = (req, res, next) => {
         }
         const decoded = jwt.verify(token, JWT_SECRET);
         req.user = decoded;
+        if (!req.user.id) {
+            return res
+                .status(401)
+                .json(ApiResponse(false, null, "Accesso negato. Nessun utente trovato."));
+        }
         next();
     } catch (err) {
         console.error("Errore autenticazione:", err.message);
