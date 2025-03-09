@@ -14,7 +14,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret";
 
 const authMiddleware = (req, res, next) => {
     try {
-        const token = req.cookies?.token;
+        const token = req.cookies?.token || req.body?.token; // 'req.body?.token' TO DELETE! DEBUG
         if (!token) {
             return res
                 .status(401)

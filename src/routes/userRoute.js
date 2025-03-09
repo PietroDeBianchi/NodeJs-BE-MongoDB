@@ -9,7 +9,7 @@ const {getUsers, updateUser, deleteUser} = require("../controllers/userControlle
 // USER ROUTES
 //================================================================================
 router.get("/", authMiddleware, getUsers);
-router.put("/", authMiddleware, updateUser);
-router.delete("/", authMiddleware, deleteUser);
+router.put("/:id", authMiddleware, updateUser);
+router.delete("/:id", authMiddleware, deleteUser);
 
 module.exports = router;

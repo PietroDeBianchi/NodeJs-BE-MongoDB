@@ -50,7 +50,7 @@ const login = async (req, res, next) => {
             maxAge: 24 * 60 * 60 * 1000, // 1d
             // secure: process.env.NODE_ENV === "production", // Only HTTPS  in production
         });
-        res.status(200).json(ApiResponse(result.success, null, result.message));
+        res.status(200).json(ApiResponse(result.success, result.data, result.message)); // 'result.data' TO SET null! DEBUG
     } catch (error) {
         console.error("Errore login:", error);
         res.status(500).json(ApiResponse(false, null, "Errore interno del server"));

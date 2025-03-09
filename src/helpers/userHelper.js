@@ -18,7 +18,7 @@ const retriveUsers = async (req, res) => {
         if (users.length === 0) {
             return ApiResponse(false, null, "Utenti non trovati o pari a 0");
         }
-        return res.json(ApiResponse(true, users, "Lista utenti recuperata con successo"));
+        return ApiResponse(true, users, "Lista utenti recuperata con successo");
     } catch (error) {
         console.error("Errore durante il recupero degli utenti:", error);
         return ApiResponse(false, null, "Errore nel recupero degli utenti");

@@ -25,7 +25,11 @@ const getUsers = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
     try {
         const { firstName, lastName, email, phone } = req.body;
-        const result = await updateNewUser(req.user.id, { firstName, lastName, email, phone });
+        const userId = req.params.id; // add '|| req.user.id'
+        if (!userId) {
+            return res.status(400).json(ApiResponse(false, null, "ID Utente non trovato"));
+        }
+        const result = await updateNewUser(userId, { firstName, lastName, email, phone });
         if (!result.success) {
             return res.status(400).json(result);
         }
@@ -38,7 +42,11 @@ const updateUser = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
     try {
-        const result = await deleteExistingUser(req.user.id);
+        const userId = req.params.id; // add '|| req.user.id'
+        if (!userId) {
+            return res.status(400).json(ApiResponse(false, null, "ID Utente non trovato"));
+        }
+        const result = await deleteExistingUser(userId);
         if (!result.success) {
             return res.status(400).json(result);
         }
@@ -49,4 +57,4 @@ const deleteUser = async (req, res, next) => {
     }
 };
 
-module.exports = { getUsers, createUser, updateUser, deleteUser };
+module.exports = { getUsers, updateUser, deleteUser };
