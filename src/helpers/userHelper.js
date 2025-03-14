@@ -12,7 +12,7 @@ const JWT_EXPIRATION = process.env.JWT_EXPIRATION || "1d";
  * @throws {Error} - Throws error if user is not found.
  */
 
-const retriveUsers = async (req, res) => {
+const retriveUsers = async () => {
     try {
         const users = await User.find().select("-password");
         if (users.length === 0) {

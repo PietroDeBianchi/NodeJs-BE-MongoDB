@@ -9,7 +9,7 @@ const { retriveUsers, updateNewUser, deleteExistingUser } = require("../helpers/
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-const getUsers = async (req, res, next) => {
+const getUsers = async (res) => {
     try {
         const result = await retriveUsers();
         if (!result.success) {
@@ -22,7 +22,7 @@ const getUsers = async (req, res, next) => {
     }
 };
 
-const updateUser = async (req, res, next) => {
+const updateUser = async (req, res) => {
     try {
         const { firstName, lastName, email, phone } = req.body;
         const userId = req.params.id; // add '|| req.user.id'
@@ -40,7 +40,7 @@ const updateUser = async (req, res, next) => {
     }
 };
 
-const deleteUser = async (req, res, next) => {
+const deleteUser = async (req, res) => {
     try {
         const userId = req.params.id; // add '|| req.user.id'
         if (!userId) {

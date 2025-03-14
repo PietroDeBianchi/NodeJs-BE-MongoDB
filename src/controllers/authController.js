@@ -10,7 +10,7 @@ const ApiResponse = require("../utils/formats/apiReponse.js");
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-const register = async (req, res, next) => {
+const register = async (req, res) => {
     try {
         const { email, password, firstName, lastName, roles, phone } = req.body;
         if (!email || !password || !firstName || !lastName) {
@@ -35,7 +35,7 @@ const register = async (req, res, next) => {
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-const login = async (req, res, next) => {
+const login = async (req, res) => {
     try {
         const { email, password } = req.body;
         if (!email && !password) {
@@ -64,7 +64,7 @@ const login = async (req, res, next) => {
  * @param {Object} res - Express response object.
  * @param {Function} next - Express next middleware function.
  */
-const me = async (req, res, next) => {
+const me = async (req, res) => {
     try {
         const result = await getUserById(req.user.id);
         if (!result.success) {
