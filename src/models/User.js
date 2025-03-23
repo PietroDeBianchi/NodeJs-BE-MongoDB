@@ -28,11 +28,6 @@ const userSchema = new Schema(
             type: String,
             required: false,
         },
-        themeMode: {
-            type: String,
-            enum: ["light","dark"],
-            default: "light",
-        },
         roles: {
             type: String,
             enum: ['user', 'admin', 'superadmin'],

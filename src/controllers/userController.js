@@ -1,4 +1,4 @@
-const ApiResponse = require("../utils/formats/apiReponse.js");
+const ApiResponse = require("../utils/types/apiReponse.js");
 const { retriveUsers, updateNewUser, deleteExistingUser } = require("../helpers/userHelper.js");
 
 /**

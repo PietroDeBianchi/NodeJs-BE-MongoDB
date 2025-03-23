@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const ApiResponse = require("../utils/formats/apiReponse.js");
+const ApiResponse = require("../utils/types/apiReponse.js");
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret";
 
